@@ -183,10 +183,6 @@ const Room = () => {
                 item.peer?.signal(payload.signal);
               });
 
-              socket.on("refresh queue", (users: Array<any>) => {
-                setQueue(users);
-              });
-
               socket.on("update queue", (users: Array<any>) => {
                 const newPeer = [] as any;
                 users.forEach((data: any) => {
