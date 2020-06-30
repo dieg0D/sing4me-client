@@ -173,6 +173,7 @@ const Room = () => {
                   ...users,
                   { peer: addedPeer, userID: payload.userID },
                 ]);
+                
                 socket.emit("request update", id);
               });
 
@@ -181,6 +182,10 @@ const Room = () => {
                   (p: any) => p.peerID === payload.id
                 );
                 item.peer?.signal(payload.signal);
+              });
+
+              socket.on("refresh queue", (users: Array<any>) => {
+                setQueue(users);
               });
 
               socket.on("update queue", (users: Array<any>) => {
