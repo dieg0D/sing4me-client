@@ -14,6 +14,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import { Container } from "./styles";
 
+
 const videoConstraints = {
   height: window.innerHeight / 2,
   width: window.innerWidth / 2,
@@ -123,7 +124,7 @@ const Room = () => {
           mediaDevices
             .getUserMedia({ video: videoConstraints, audio: true })
             .then((camStream: any) => {
-              setMyvideo(desktopStream);
+              setMyvideo(camStream);
 
               const tracks = [
                 ...camStream.getVideoTracks(),
@@ -214,6 +215,12 @@ const Room = () => {
   }, [id, history, user, addPeer, createPeer, mergeAudioStreams]);
 
   useEffect(() => {
+    const elements = document.getElementsByClassName("video");
+
+    for (let i = 0; i < elements.length; i++) {
+    
+    }
+
     setVideos([]);
     queue.map((item: any, index: number) => {
       if (item?.userID === user?.id) {

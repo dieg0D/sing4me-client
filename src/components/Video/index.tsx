@@ -6,6 +6,7 @@ import VolumeUp from "@material-ui/icons/VolumeUp";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import { Container } from "./styles";
+import { unmountComponentAtNode } from "react-dom";
 
 interface videoProps {
   peer: any;
@@ -14,7 +15,7 @@ interface videoProps {
 }
 
 const Video: React.FC<videoProps> = ({ peer, videoRef, controls }) => {
-  const video = useRef<HTMLVideoElement>({} as any);
+  //const video = useRef<HTMLVideoElement>({} as any);
   const audio = useRef<HTMLAudioElement>({} as any);
   const canvas = useRef<HTMLCanvasElement>({} as any);
 
@@ -40,28 +41,35 @@ const Video: React.FC<videoProps> = ({ peer, videoRef, controls }) => {
   }, []);
 
   useEffect(() => {
-    video.current.srcObject = null;
-    video.current.autoplay = true;
-    video.current.muted = true;
-    video.current.id = "videoplayer";
+    const oldvideo = document.getElementById("video");
 
-    if (peer && video) {
-      peer.peer.on("stream", (stream: any) => {
-        video.current.srcObject = stream;
+    if (oldvideo) {
+      unmountComponentAtNode(oldvideo);
+    }
+
+    const video = document.createElement("video");
+    const container = document.getElementById("container");
+    video.autoplay = true;
+    video.muted = true;
+    video.id = "video";
+
+    container?.appendChild(video);
+
+    if (controls) {
+      peer?.peer.on("stream", (stream: any) => {
+        video.srcObject = stream;
 
         audio.current.srcObject = stream;
         audio.current.volume = 0.2;
+        console.log("Peer");
       });
-    } else if (videoRef && video) {
-      video.current.srcObject = videoRef;
+    } else {
+      video.srcObject = videoRef;
+      console.log("VideoRef");
     }
 
-    const interval = setInterval(() => draw(video.current), 25);
-
-    return () => {
-      window.clearInterval(interval);
-    };
-  }, [peer, videoRef, draw]);
+    setInterval(() => draw(video), 25);
+  }, [peer, videoRef, draw, controls]);
 
   const handleSliderChange = useCallback(
     (event: any, newValue: number | number[]) => {
@@ -74,10 +82,10 @@ const Video: React.FC<videoProps> = ({ peer, videoRef, controls }) => {
   return (
     <Container
       className="video"
+      id="container"
       onMouseEnter={() => setShowControlls(true)}
       onMouseLeave={() => setShowControlls(false)}
     >
-      <video ref={video} />
       <canvas ref={canvas} className={!controls ? "mirror" : ""}>
         {controls ? <audio ref={audio} autoPlay /> : undefined}
       </canvas>
@@ -88,7 +96,7 @@ const Video: React.FC<videoProps> = ({ peer, videoRef, controls }) => {
             <PauseIcon
               onClick={() => {
                 audio.current.pause();
-                video.current.pause();
+                //video.current.pause();
                 setPlay(false);
               }}
             />
@@ -96,7 +104,7 @@ const Video: React.FC<videoProps> = ({ peer, videoRef, controls }) => {
             <PlayArrowIcon
               onClick={() => {
                 audio.current.play();
-                video.current.play();
+                //video.current.play();
                 setPlay(true);
               }}
             />
