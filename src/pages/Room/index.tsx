@@ -4,7 +4,8 @@ import Input from "../../components/Input";
 import { FiSearch, FiYoutube } from "react-icons/fi";
 
 import Header from "../../components/Header";
-import Video from "../../components/Video";
+import MyVideo from "../../components/MyVideo";
+import PeerVideo from "../../components/PeerVideo";
 import Button from "../../components/Button";
 import Peer from "simple-peer";
 import { socket } from "../../services/socket";
@@ -13,7 +14,6 @@ import { notification } from "../../components/notifications";
 import { useAuth } from "../../contexts/AuthContext";
 
 import { Container } from "./styles";
-
 
 const videoConstraints = {
   height: window.innerHeight / 2,
@@ -104,7 +104,7 @@ const Room = () => {
   );
 
   useEffect(() => {
-    const route = localStorage.getItem("@sing4me:room");
+    const route = sessionStorage.getItem("@sing4me:room");
 
     if (route !== id) {
       notification(
@@ -145,18 +145,20 @@ const Room = () => {
               socket.on("all users", (users: Array<any>) => {
                 const newPeer = [] as any;
                 users.forEach((data: any) => {
-                  const peer = createPeer(data, socket.id, stream);
-                  peersRef.current = [];
-                  peersRef.current.push({
-                    peerID: data.id,
-                    peer,
-                    userID: data.userID,
-                  });
-                  newPeer.push({ peer, userID: data.userID });
+                  if (data.userID !== user?.id) {
+                    const peer = createPeer(data, socket.id, stream);
+                    peersRef.current = [];
+                    peersRef.current.push({
+                      peerID: data.id,
+                      peer,
+                      userID: data.userID,
+                    });
+                    newPeer.push({ peer, userID: data.userID });
+                  }
                 });
 
                 setPeers(newPeer);
-                socket.emit("request update", id);
+                setQueue(users);
               });
 
               socket.on("user joined", (payload: any) => {
@@ -178,13 +180,31 @@ const Room = () => {
                 const item: any = peersRef.current.find(
                   (p: any) => p.peerID === payload.id
                 );
-                item.peer.signal(payload.signal);
+                item.peer?.signal(payload.signal);
               });
 
-              socket.on("update queue", (users: Array<any>) => {
+              socket.on("refresh queue", (users: Array<any>) => {
                 setQueue(users);
               });
 
+              socket.on("update queue", (users: Array<any>) => {
+                const newPeer = [] as any;
+                users.forEach((data: any) => {
+                  if (data.userID !== user?.id) {
+                    const peer = createPeer(data, socket.id, stream);
+                    peersRef.current = [];
+                    peersRef.current.push({
+                      peerID: data.id,
+                      peer,
+                      userID: data.userID,
+                    });
+                    newPeer.push({ peer, userID: data.userID });
+                  }
+                });
+
+                setPeers(newPeer);
+                setQueue(users);
+              });
               socket.on("remove user", (removedUser: any) => {
                 peersRef.current = peersRef.current.filter(
                   (item: any) => item.peerID !== removedUser.id
@@ -210,37 +230,26 @@ const Room = () => {
     }
 
     return () => {
-      localStorage.removeItem("@sing4me:room");
+      sessionStorage.setItem("@sing4me:room", "");
     };
-  }, [id, history, user, addPeer, createPeer, mergeAudioStreams]);
+    // eslint-disable-next-line
+  }, [id, history, addPeer, createPeer, mergeAudioStreams]);
 
   useEffect(() => {
-    const elements = document.getElementsByClassName("video");
-
-    for (let i = 0; i < elements.length; i++) {
-    
-    }
-
-    setVideos([]);
+    const updatedVideos: any = [];
     queue.map((item: any, index: number) => {
       if (item?.userID === user?.id) {
-        setVideos((vds: any) => [
-          ...vds,
-          <Video key={index} peer={null} videoRef={myVideo} controls={false} />,
-        ]);
+        updatedVideos.push(<MyVideo key={index} stream={myVideo} />);
       } else {
-        setVideos((vds: any) => [
-          ...vds,
-          <Video
-            key={index}
-            peer={peers.find((p: any) => p?.userID === item?.userID)}
-            videoRef={null}
-            controls={true}
-          />,
-        ]);
+        const peer = peers.find((p: any) => p?.userID === item?.userID);
+        if (peer?.peer) {
+          updatedVideos.push(<PeerVideo key={index} peer={peer.peer} />);
+        }
       }
       return null;
     });
+
+    setVideos(updatedVideos);
   }, [queue, peers, user, myVideo]);
 
   const next = useCallback(() => {

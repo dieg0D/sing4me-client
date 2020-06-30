@@ -46,7 +46,7 @@ const Home: React.FC = () => {
 
     createRooms(name, password)
       .then((res) => {
-        localStorage.setItem("@sing4me:room", res.data.id);
+        sessionStorage.setItem("@sing4me:room", res.data.id);
         history.push(`/room/${res.data.id}`);
       })
       .catch((err) => notification("Erro", err.response.data.error, "danger"));
