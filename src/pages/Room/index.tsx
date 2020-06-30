@@ -162,18 +162,6 @@ const Room = () => {
               });
 
               socket.on("user joined", (payload: any) => {
-                const addedPeer = addPeer(payload, payload.callerID, stream);
-                peersRef.current.push({
-                  peerID: payload.callerID,
-                  peer: addedPeer,
-                  userID: payload.userID,
-                });
-
-                setPeers((users: any) => [
-                  ...users,
-                  { peer: addedPeer, userID: payload.userID },
-                ]);
-                
                 socket.emit("request update", id);
               });
 
@@ -182,10 +170,6 @@ const Room = () => {
                   (p: any) => p.peerID === payload.id
                 );
                 item.peer?.signal(payload.signal);
-              });
-
-              socket.on("refresh queue", (users: Array<any>) => {
-                setQueue(users);
               });
 
               socket.on("update queue", (users: Array<any>) => {
@@ -217,6 +201,7 @@ const Room = () => {
                     userID: item.userID,
                   }))
                 );
+                socket.emit("request update", id);
               });
             });
         })
