@@ -162,7 +162,18 @@ const Room = () => {
               });
 
               socket.on("user joined", (payload: any) => {
-                socket.emit("request update", id);
+                const addedPeer = addPeer(payload, payload.callerID, stream);
+                peersRef.current.push({
+                  peerID: payload.callerID,
+                  peer: addedPeer,
+                  userID: payload.userID,
+                });
+
+                setPeers((users: any) => [
+                  ...users,
+                  { peer: addedPeer, userID: payload.userID },
+                ]);
+                socket.emit("add to queue", id);
               });
 
               socket.on("receiving returned signal", (payload: any) => {
@@ -190,6 +201,11 @@ const Room = () => {
                 setPeers(newPeer);
                 setQueue(users);
               });
+
+              socket.on("refresh queue", (users: Array<any>) => {
+                setQueue(users);
+              });
+              
               socket.on("remove user", (removedUser: any) => {
                 peersRef.current = peersRef.current.filter(
                   (item: any) => item.peerID !== removedUser.id
