@@ -9,11 +9,11 @@ import Register from "../pages/Register";
 import RecoverPassword from "../pages/RecoverPassword";
 import UpdatePassword from "../pages/UpdatePassword";
 
-const Routes: React.FC = () => {
+const Routes = () => {
   return (
     <Switch>
       <Route path="/" exact component={Home} isPrivate />
-      <Route path="/room/:id" component={Room} isPrivate />
+      <Route path="/room/:roomID" component={Room} isPrivate />
       <Route path="/update-password" component={UpdatePassword} isPrivate />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />

@@ -10,19 +10,7 @@ import { useHistory } from "react-router-dom";
 import { enterRoom } from "../../services/Room";
 import { notification } from "../../components/notifications";
 
-interface RoomType {
-  id: string;
-  name: string;
-  length: number;
-}
-
-interface ModalProps {
-  open: any;
-  setOpen: any;
-  room: RoomType;
-}
-
-const ModalComponent: React.FC<ModalProps> = ({ open, setOpen, room }) => {
+const ModalComponent = ({ open, setOpen, room }) => {
   const history = useHistory();
   const [password, setPassword] = useState("");
 
@@ -30,15 +18,17 @@ const ModalComponent: React.FC<ModalProps> = ({ open, setOpen, room }) => {
     setOpen(false);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     enterRoom(room.id, password)
       .then((res) => {
-        sessionStorage.setItem("@sing4me:room", res.data.id);
-        history.push(`/room/${res.data.id}`);
+        sessionStorage.setItem("@sing4me:room", res?.data?.id);
+        history.push(`/room/${res?.data?.id}`);
       })
-      .catch((err) => notification("Erro", err.response.data.error, "danger"));
+      .catch((err) =>
+        notification("Erro", err?.response?.data?.message, "danger")
+      );
   };
 
   return (
@@ -56,9 +46,9 @@ const ModalComponent: React.FC<ModalProps> = ({ open, setOpen, room }) => {
       <Fade in={open}>
         <Container>
           <h1>{room?.name}</h1>
-          <p>
+          <p style={{ color: room?.length < 4 ? "white" : "red" }}>
             <FiUsers size={20} />
-            {room?.length}/6
+            {room?.length}/4
           </p>
           <form onSubmit={handleSubmit}>
             <Input

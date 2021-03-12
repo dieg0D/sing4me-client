@@ -1,11 +1,6 @@
 import styled, { css } from "styled-components";
 import { shade } from "polished";
 
-interface ImgProps {
-  active: boolean;
-  display: boolean;
-}
-
 export const Container = styled.div`
   background: #212121;
   width: 30vw;
@@ -74,7 +69,7 @@ export const Container = styled.div`
   }
 `;
 
-export const Img = styled.img<ImgProps>`
+export const Img = styled.img`
   ${({ display }) =>
     !display &&
     css`

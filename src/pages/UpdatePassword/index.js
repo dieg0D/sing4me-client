@@ -10,19 +10,21 @@ import { Container, Content } from "./styles";
 import { updatePassword } from "../../services/User";
 import { notification } from "../../components/notifications";
 
-const UpdatePassword: React.FC = () => {
+const UpdatePassword = () => {
   const { user } = useAuth();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     updatePassword(oldPassword, newPassword)
       .then(() => {
         notification("Sucesso", "Senha atualizada com sucesso!", "success");
       })
-      .catch((err) => notification("Erro", err.response.data.error, "danger"));
+      .catch((err) =>
+        notification("Erro", err.response.data.message, "danger")
+      );
   };
 
   return (

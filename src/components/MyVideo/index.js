@@ -2,17 +2,11 @@ import React, { useEffect, useRef, useCallback } from "react";
 
 import { Container } from "./styles";
 
-interface videoProps {
-  stream: any;
-}
-
-const Video: React.FC<videoProps> = ({ stream }) => {
-  const video = useRef<HTMLVideoElement>({} as any);
-
-  const canvas = useRef<HTMLCanvasElement>({} as any);
+const Video = ({ stream }) => {
+  const canvas = useRef();
 
   const draw = useCallback(
-    (image: any) => {
+    (image) => {
       if (canvas && canvas.current && canvas.current.getContext && image) {
         const ctx = canvas.current.getContext("2d");
         ctx && ctx.restore();
@@ -31,15 +25,13 @@ const Video: React.FC<videoProps> = ({ stream }) => {
 
   useEffect(() => {
     if (stream) {
-      video.current.srcObject = stream;
-      video.current.className = "EU";
-      setInterval(() => draw(video.current), 25);
+      setInterval(() => draw(stream.current), 25);
     }
   }, [stream, draw]);
 
   return (
     <Container className="video" id="my-container">
-      <video ref={video} autoPlay muted />
+      <video ref={stream} autoPlay muted />
       <canvas ref={canvas} className="mirror" />
     </Container>
   );

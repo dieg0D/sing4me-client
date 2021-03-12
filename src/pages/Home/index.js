@@ -11,18 +11,13 @@ import { useHistory } from "react-router-dom";
 import { getRooms, createRooms } from "../../services/Room";
 import { notification } from "../../components/notifications";
 
-interface RoomType {
-  id: string;
-  name: string;
-  length: number;
-}
-
-const Home: React.FC = () => {
+const Home = () => {
   const history = useHistory();
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState<Array<RoomType>>([]);
-  const [room, setRoom] = useState<RoomType>({} as RoomType);
+  const [data, setData] = useState([]);
+  const [room, setRoom] = useState({});
   const [name, setName] = useState("");
+  const [search, setSearch] = useState("");
   const [password, setPassword] = useState("");
 
   useEffect(() => {
@@ -41,15 +36,17 @@ const Home: React.FC = () => {
       .catch((err) => console.log(err));
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     createRooms(name, password)
       .then((res) => {
-        sessionStorage.setItem("@sing4me:room", res.data.id);
-        history.push(`/room/${res.data.id}`);
+        sessionStorage.setItem("@sing4me:room", res?.data?.id);
+        history.push(`/room/${res?.data?.id}`);
       })
-      .catch((err) => notification("Erro", err.response.data.error, "danger"));
+      .catch((err) =>
+        notification("Erro", err?.response?.data?.message, "danger")
+      );
   };
 
   return (
@@ -58,25 +55,38 @@ const Home: React.FC = () => {
       <Content>
         <div className="rooms">
           <div className="search">
-            <Search />
+            <Search onChange={(e) => setSearch(e.target.value)} />
           </div>
           <div className="container">
-            {data.map((room, index) => (
-              <div
-                key={index}
-                className="room"
-                onClick={() => {
-                  setRoom(room);
-                  setOpen(true);
-                }}
-              >
-                <h3>{room?.name}</h3>
-                <p>
-                  <FiUsers size={20} />
-                  {room?.length}/6
-                </p>
+            {data.filter((e) =>
+              e.name.toLowerCase().includes(search.toLowerCase())
+            ).length > 0 ? (
+              data
+                .filter((e) =>
+                  e.name.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((room, index) => (
+                  <div
+                    key={index}
+                    className="room"
+                    onClick={() => {
+                      setRoom(room);
+                      setOpen(true);
+                    }}
+                  >
+                    <h3>{room?.name}</h3>
+                    <p style={{ color: room?.length < 4 ? "white" : "red" }}>
+                      <FiUsers size={20} />
+                      {room?.length}/4
+                    </p>
+                  </div>
+                ))
+            ) : (
+              <div className="no-rooms">
+                <p className="face">¯\_(ツ)_/¯</p>
+                <p>Nenhuma sala disponível</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
         <div className="side-menu">

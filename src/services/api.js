@@ -4,14 +4,14 @@ import axios from "axios";
 export const url = "https://sing4me-api.herokuapp.com/";
 
 const api = axios.create({
-  baseURL: url,
+  baseURL: url + "v1/",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 api.interceptors.request.use(
-  (config: any) => {
+  (config) => {
     try {
       const user = localStorage.getItem("@sing4me:user");
       if (user) {

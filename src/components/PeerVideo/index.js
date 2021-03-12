@@ -7,22 +7,16 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import { Container } from "./styles";
 
-interface videoProps {
-  peer: any;
-}
+const Video = ({ peer }) => {
+  const video = useRef();
+  const audio = useRef();
+  const canvas = useRef();
 
-const Video: React.FC<videoProps> = ({ peer }) => {
-  const video = useRef<HTMLVideoElement>({} as any);
-  const audio = useRef<HTMLAudioElement>({} as any);
-  const canvas = useRef<HTMLCanvasElement>({} as any);
-
-  const [volume, setVolume] = useState<
-    number | string | Array<number | string>
-  >(0.6);
+  const [volume, setVolume] = useState(0.6);
   const [play, setPlay] = useState(true);
   const [showControlls, setShowControlls] = useState(false);
 
-  const draw = useCallback((stream: any) => {
+  const draw = useCallback((stream) => {
     if (canvas && canvas.current && canvas.current.getContext && stream) {
       const ctx = canvas.current.getContext("2d");
       ctx && ctx.restore();
@@ -38,24 +32,19 @@ const Video: React.FC<videoProps> = ({ peer }) => {
   }, []);
 
   useEffect(() => {
-    peer?.on("stream", (stream: any) => {
-      if (video.current && audio.current) {
-        video.current.srcObject = stream;
-        video.current.className = "Peer";
-        audio.current.srcObject = stream;
-        audio.current.volume = 0.2;
-        setInterval(() => draw(video.current), 25);
-      }
+    peer.on("stream", (stream) => {
+      video.current.srcObject = stream;
+      video.current.className = "Peer";
+      audio.current.srcObject = stream;
+      audio.current.volume = 0.2;
+      setInterval(() => draw(video.current), 25);
     });
   }, [peer, draw]);
 
-  const handleSliderChange = useCallback(
-    (event: any, newValue: number | number[]) => {
-      setVolume(newValue);
-      audio.current.volume = newValue as number;
-    },
-    []
-  );
+  const handleSliderChange = useCallback((event, newValue) => {
+    setVolume(newValue);
+    audio.current.volume = newValue;
+  }, []);
 
   return (
     <Container

@@ -80,6 +80,23 @@ export const Content = styled.div`
           }
         }
       }
+
+      .no-rooms {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        p {
+          color: #414141;
+          font-size: 2rem;
+        }
+        .face {
+          font-size: 10rem;
+          margin-top: 2rem;
+          margin-bottom: 0.5rem;
+        }
+      }
     }
   }
 

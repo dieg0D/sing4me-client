@@ -1,20 +1,10 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  InputHTMLAttributes,
-  useCallback,
-} from "react";
-import { IconBaseProps } from "react-icons";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { FiSearch } from "react-icons/fi";
+
 import { Container } from "./styles";
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  name: string;
-  icon?: React.ComponentType<IconBaseProps>;
-}
-
-const Input: React.FC<InputProps> = ({ icon: Icon, ...rest }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+const Search = ({ ...rest }) => {
+  const inputRef = useRef();
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
 
@@ -30,8 +20,9 @@ const Input: React.FC<InputProps> = ({ icon: Icon, ...rest }) => {
 
   return (
     <Container isFocused={isFocused} isFilled={isFilled}>
-      {Icon && <Icon size={20} />}
+      <FiSearch size={20} />
       <input
+        placeholder="Buscar sala..."
         onFocus={() => setIsFocused(true)}
         onBlur={handleInputBlur}
         ref={inputRef}
@@ -41,4 +32,4 @@ const Input: React.FC<InputProps> = ({ icon: Icon, ...rest }) => {
   );
 };
 
-export default Input;
+export default Search;

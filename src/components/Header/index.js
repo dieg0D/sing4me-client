@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 import { Container, Content } from "./styles";
 
-const Header: React.FC = () => {
+const Header = () => {
   const { user, signOut, updateData } = useAuth();
   const [visible, setVisible] = useState(false);
   const [showList, setShowList] = useState(false);
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
     setName(user ? user?.name : "");
   }, [visible, user]);
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     updateName(name)
       .then((res) => updateData(res.data))

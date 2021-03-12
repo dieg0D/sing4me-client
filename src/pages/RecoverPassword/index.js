@@ -6,7 +6,7 @@ import { FiArrowLeft, FiMail } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Container, Content, Background } from "./styles";
 
-const RecoverPassword: React.FC = () => {
+const RecoverPassword = () => {
   return (
     <Container>
       <Background />

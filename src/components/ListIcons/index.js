@@ -6,11 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { updateAvatar } from "../../services/User";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-interface List {
-  setShowList: any;
-}
-
-const ListIcons: React.FC<List> = ({ setShowList }) => {
+const ListIcons = ({ setShowList }) => {
   const { user, updateData } = useAuth();
   const [avatar, setAvatar] = useState("");
   const [loaded, setLoaded] = useState(0);
@@ -19,7 +15,7 @@ const ListIcons: React.FC<List> = ({ setShowList }) => {
     setAvatar(user ? user?.avatar : "");
   }, [user]);
 
-  const changeAvatar = (newAvatar: string) => {
+  const changeAvatar = (newAvatar) => {
     updateAvatar(newAvatar)
       .then((res) => updateData(res.data))
       .catch((err) => console.log(err));
