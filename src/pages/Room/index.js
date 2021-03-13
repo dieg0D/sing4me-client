@@ -43,6 +43,7 @@ const Room = (props) => {
 
   useEffect(() => {
     const route = sessionStorage.getItem("@sing4me:room");
+    const mediaDevices = navigator.mediaDevices;
 
     if (route !== roomID) {
       notification(
@@ -52,7 +53,6 @@ const Room = (props) => {
       );
       history.push(`/`);
     } else {
-      const mediaDevices = navigator.mediaDevices;
       mediaDevices
         .getDisplayMedia({
           video: true,
@@ -72,6 +72,11 @@ const Room = (props) => {
               const stream = new MediaStream(tracks);
 
               socket.emit("join room", roomID);
+
+              socket.on("room full", () => {
+                notification("Erro", "Sala cheia =(", "danger");
+                history.push(`/`);
+              });
 
               socket.on("all users", (users) => {
                 const peers = [];
@@ -93,7 +98,7 @@ const Room = (props) => {
                   peer,
                 });
 
-                setPeers((users) => [...users, peer]);
+                setPeers(peersRef.current.map((item) => item.peer));
               });
 
               socket.on("receiving returned signal", (payload) => {
@@ -108,23 +113,25 @@ const Room = (props) => {
               });
 
               socket.on("remove user", (removedUserID) => {
+                const peerObj = peersRef.current.find(
+                  (item) => item.peerID === removedUserID
+                );
+
+                if (peerObj) {
+                  peerObj.peer.destroy();
+                }
                 peersRef.current = peersRef.current.filter(
                   (item) => item.peerID !== removedUserID
                 );
 
-                setPeers(
-                  peersRef.current.map((item) => ({
-                    peer: item.peer,
-                    userID: item.userID,
-                  }))
-                );
+                setPeers(peersRef.current.map((item) => item.peer));
               });
             });
         })
         .catch(() => {
           notification(
             "Erro",
-            "Para poder utilizar o sing4me você precisa autorizar o uso da sua camera, microfone e a transmissão da sua tela =(",
+            "Para poder utilizar o sing4me você precisa autorizar o uso da sua camera, microfone e a transmissão da sua tela !",
             "danger"
           );
           history.push(`/`);

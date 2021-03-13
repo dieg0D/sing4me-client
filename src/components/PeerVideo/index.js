@@ -6,8 +6,9 @@ import VolumeUp from "@material-ui/icons/VolumeUp";
 import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import { Container } from "./styles";
+import { FaCrown } from "react-icons/fa";
 
-const Video = ({ peer }) => {
+const Video = ({ peer, active }) => {
   const video = useRef();
   const audio = useRef();
   const canvas = useRef();
@@ -48,11 +49,12 @@ const Video = ({ peer }) => {
 
   return (
     <Container
-      className="video"
+      className={`video ${active ? "active" : ""}`}
       id="container"
       onMouseEnter={() => setShowControlls(true)}
       onMouseLeave={() => setShowControlls(false)}
     >
+      <FaCrown size={50} className="crown" />
       <video ref={video} autoPlay muted />
       <canvas ref={canvas}>
         <audio ref={audio} autoPlay />

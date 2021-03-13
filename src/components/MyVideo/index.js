@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useCallback } from "react";
-
+import { FaCrown } from "react-icons/fa";
 import { Container } from "./styles";
 
-const Video = ({ stream }) => {
+const Video = ({ stream, active }) => {
   const canvas = useRef();
 
   const draw = useCallback(
@@ -30,7 +30,8 @@ const Video = ({ stream }) => {
   }, [stream, draw]);
 
   return (
-    <Container className="video" id="my-container">
+    <Container className={`video ${active ? "active" : ""}`} id="my-container">
+      <FaCrown size={50} className="crown" />
       <video ref={stream} autoPlay muted />
       <canvas ref={canvas} className="mirror" />
     </Container>
