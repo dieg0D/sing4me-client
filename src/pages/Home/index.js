@@ -108,6 +108,7 @@ const Home = () => {
                   icon={FiEdit3}
                   type="text"
                   placeholder="Nome"
+                  autoComplete="off"
                 />
 
                 <Input
@@ -118,6 +119,7 @@ const Home = () => {
                   icon={FiLock}
                   type="password"
                   placeholder="Senha"
+                  autoComplete="off"
                 />
               </div>
 
