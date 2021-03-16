@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const url = "http://localhost:3000/";
-//export const url = "https://sing4me-api.herokuapp.com/";
+// export const url = "http://localhost:3000/";
+export const url = "https://sing4me-api.herokuapp.com/";
 
 const api = axios.create({
   baseURL: url + "v1/",
