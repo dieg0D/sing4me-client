@@ -29,10 +29,8 @@ export const Container = styled.div`
       ${({ videos }) =>
         videos === 1 &&
         css`
-          grid-template-rows: 49% 49%;
-          grid-template-areas:
-            "."
-            ".";
+          grid-template-columns: 1fr 1fr;
+          grid-template-areas: ". .";
         `}
 
       ${({ videos }) =>
@@ -208,10 +206,8 @@ export const Container = styled.div`
       ${({ videos }) =>
         videos === 1 &&
         css`
-          grid-template-rows: 49% 49%;
-          grid-template-areas:
-            "."
-            ".";
+          grid-template-columns: 1fr 1fr;
+          grid-template-areas: ". .";
         `}
 
       ${({ videos }) =>
