@@ -406,7 +406,14 @@ export const Container = styled.div`
       .content {
         width: 100%;
         height: 60%;
-
+        ${({ videos }) =>
+          videos === 1 &&
+          css`
+            grid-template-rows: 49% 49%;
+            grid-template-areas:
+              "."
+              ".";
+          `}
         margin-bottom: 0.5rem;
       }
       .sidebar {
@@ -425,6 +432,14 @@ export const Container = styled.div`
       .content {
         width: 100%;
         height: 50%;
+        ${({ videos }) =>
+          videos === 1 &&
+          css`
+            grid-template-rows: 49% 49%;
+            grid-template-areas:
+              "."
+              ".";
+          `}
         margin-bottom: 0.5rem;
       }
       .sidebar {
