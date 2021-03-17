@@ -73,6 +73,33 @@ export const Container = styled.div`
       }
     }
   }
+
+  @media (max-width: 550px) {
+    padding: 1rem 1rem;
+    .left {
+      width: 75%;
+      img {
+        width: 4.5rem;
+      }
+
+      .link:first-of-type {
+        margin-left: 1.5rem;
+      }
+      .link {
+        margin: 0 0.5rem;
+      }
+    }
+
+    .right {
+      width: 25%;
+      img {
+        width: 50%;
+      }
+      div {
+        display: none;
+      }
+    }
+  }
 `;
 
 export const Content = styled.div`
@@ -165,6 +192,18 @@ export const Content = styled.div`
 
     svg {
       margin-right: 10px;
+    }
+  }
+
+  @media (max-width: 550px) {
+    width: 75vw;
+    div {
+      div {
+        right: calc(75vw - 65%);
+      }
+      img {
+        width: 30%;
+      }
     }
   }
 `;

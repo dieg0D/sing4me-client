@@ -30,9 +30,10 @@ export const Content = styled.div`
 
     .container {
       width: 100%;
-      height: 90%;
-      display: flex;
-      flex-wrap: wrap;
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-gap: 1rem;
       overflow-x: hidden;
       overflow-y: auto;
 
@@ -56,8 +57,8 @@ export const Content = styled.div`
       .room {
         background: #313131;
         border-radius: 5px;
-        width: 31%;
-        height: 21%;
+        width: 90%;
+        height: 5rem;
         padding: 0.5rem 1rem;
         display: flex;
         flex-direction: column;
@@ -162,6 +163,58 @@ export const Content = styled.div`
             background: #313131;
           }
         }
+      }
+    }
+  }
+
+  @media (max-width: 550px) {
+    flex-direction: column;
+    justify-content: flex-start;
+    /* height: auto; */
+    padding: 1rem;
+    .rooms {
+      padding: 1rem;
+      width: 100%;
+      margin-bottom: 1rem;
+      height: 50%;
+
+      .container {
+        max-height: 75%;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 0.2rem;
+
+        .room {
+          width: 90%;
+          height: 4rem;
+          h3 {
+            font-size: 0.9rem;
+          }
+          p {
+            margin-top: 0.2rem;
+            font-size: 0.8rem;
+            svg {
+              width: 15px;
+              height: 15px;
+            }
+          }
+        }
+        .no-rooms {
+          .face {
+            margin-top: 1rem;
+            font-size: 3rem;
+          }
+          p {
+            font-size: 1.3rem;
+          }
+        }
+      }
+    }
+
+    .side-menu {
+      width: 100%;
+      min-height: 100%;
+      .update {
+        display: none;
       }
     }
   }

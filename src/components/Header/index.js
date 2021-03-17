@@ -62,7 +62,7 @@ const Header = () => {
           <Content>
             <div></div>
             <div>
-              <div>
+              <div onClick={() => setShowList(true)}>
                 <FaCamera size={16} />
               </div>
               <img

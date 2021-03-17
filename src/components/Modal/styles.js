@@ -34,4 +34,8 @@ export const Container = styled.div`
       background: #313131;
     }
   }
+
+  @media (max-width: 550px) {
+    width: 90%;
+  }
 `;

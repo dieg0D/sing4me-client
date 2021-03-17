@@ -13,18 +13,51 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (password !== confirmPassword) {
+      notification(
+        "Erro",
+        "Senha e confirmação de senha não conferem!",
+        "danger"
+      );
+      setLoading(false);
+      return;
+    }
+
+    if (!name) {
+      notification("Erro", "Nome não pode ficar em branco!", "danger");
+      setLoading(false);
+      return;
+    }
+    if (!email) {
+      notification("Erro", "E-mail não pode ficar em branco!", "danger");
+      setLoading(false);
+      return;
+    }
+
+    if (!password) {
+      notification("Erro", "Senha não pode ficar em branco!", "danger");
+      setLoading(false);
+      return;
+    }
 
     signUp(name, email, password)
       .then(() => {
         history.push("/login");
         notification("Sucesso", "Conta criada com sucesso!", "success");
+        setLoading(false);
       })
-      .catch((err) =>
-        notification("Erro", err.response.data.message, "danger")
-      );
+      .catch((err) => {
+        console.log(err.response.data.message);
+        notification("Erro", err.response.data.message, "danger");
+        setLoading(false);
+      });
   };
 
   return (
@@ -58,7 +91,15 @@ const Register = () => {
             type="password"
             placeholder="Senha"
           />
-          <Button>Cadastrar</Button>
+          <Input
+            name="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            icon={FiLock}
+            type="confirmPassword"
+            placeholder="Confirmar senha"
+          />
+          <Button loading={loading}>Cadastrar</Button>
         </form>
         <Link to="login">
           <FiArrowLeft size={16} />

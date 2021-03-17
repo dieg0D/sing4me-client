@@ -25,12 +25,12 @@ export const Content = styled.div`
   }
 
   form {
-    margin: 80px 0;
+    margin: 40px 0;
     width: 50%;
     text-align: center;
 
     h2 {
-      margin-bottom: 24px;
+      margin-bottom: 30px;
     }
 
     a {
@@ -62,6 +62,16 @@ export const Content = styled.div`
 
     svg {
       margin-right: 10px;
+    }
+  }
+
+  @media (max-width: 550px) {
+    img {
+      width: 50%;
+    }
+    form {
+      width: 80%;
+      margin: 30px 0;
     }
   }
 `;

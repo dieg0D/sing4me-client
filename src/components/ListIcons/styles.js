@@ -14,6 +14,7 @@ export const Container = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding-bottom: 1rem;
     height: 25%;
 
     h2 {
@@ -37,10 +38,11 @@ export const Container = styled.div`
   .container {
     width: 100%;
     min-height: 95%;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     overflow-x: hidden;
     overflow-y: auto;
+    grid-template-areas: ". l .";
 
     &::-webkit-scrollbar-track {
       box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
@@ -65,6 +67,21 @@ export const Container = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
+
+      grid-area: l;
+      align-self: center;
+      justify-self: center;
+    }
+  }
+
+  @media (max-width: 550px) {
+    width: 75vw;
+
+    .header {
+      h2 {
+        font-size: 1rem;
+        padding-left: 2rem;
+      }
     }
   }
 `;
@@ -76,7 +93,7 @@ export const Img = styled.img`
       display: none;
     `}
 
-  width: 25%;
+  width: 70%;
   padding: 0.1rem;
   border: 2px solid #313131;
   border-radius: 50%;
@@ -91,5 +108,10 @@ export const Img = styled.img`
   &:hover {
     cursor: pointer;
     border-color: ${shade(0.2, "darkviolet")};
+  }
+
+  @media (max-width: 550px) {
+    width: 80%;
+    margin: 0.3rem;
   }
 `;

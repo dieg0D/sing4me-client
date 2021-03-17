@@ -255,79 +255,85 @@ const Room = (props) => {
   return (
     <>
       <Header />
-      <Container>
+      <Container videos={peers.length}>
         <div className={active ? "wrapper2" : "wrapper"}>
           <div className="content">
             <MyVideo stream={userVideo} />
+
             {peers.map((peer, index) => {
               return <PeerVideo key={index} peer={peer} />;
             })}
           </div>
 
-          <div className="menu">
-            <video
-              ref={karaokeVideo}
-              id="youtube"
-              className="youtube"
-              crossOrigin="anonymous"
-              controls
-              autoPlay
-              controlsList="nodownload"
-              style={{ display: "none" }}
-            ></video>
-            {active ? (
-              <button onClick={() => reset()}>Resetar</button>
-            ) : undefined}
-            <div>
-              <form onSubmit={searchVideo}>
-                <Input
-                  name="video"
-                  icon={FiYoutube}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  type="text"
-                  placeholder="Buscar video"
-                  autoComplete="off"
-                />
-                <button disabled={title.length <= 0 ? "disabled" : ""}>
-                  <FiSearch size={20} />
-                </button>
-              </form>
+          <div className="sidebar">
+            <div className="menu">
+              <video
+                ref={karaokeVideo}
+                id="youtube"
+                className="youtube"
+                crossOrigin="anonymous"
+                controls
+                autoPlay
+                controlsList="nodownload"
+                style={{ display: "none" }}
+              ></video>
+
+              <div>
+                <form onSubmit={searchVideo}>
+                  <Input
+                    name="video"
+                    icon={FiYoutube}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    type="text"
+                    placeholder="Buscar video"
+                    autoComplete="off"
+                  />
+                  <button disabled={title.length <= 0 ? "disabled" : ""}>
+                    <FiSearch size={20} />
+                  </button>
+                </form>
+              </div>
+              {loading ? (
+                <div className="loader">
+                  <CircularProgress style={{ color: "darkviolet" }} />
+                </div>
+              ) : undefined}
+              <div className="VideoCardsContainer ">
+                {videos.map((video, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="videoCard"
+                      onClick={() => playMusic(video?.id)}
+                    >
+                      <img
+                        src={video?.bestThumbnail?.url}
+                        alt="video thumbnail"
+                      />
+                      {loading2 && videoId === video?.id ? (
+                        <div>
+                          <CircularProgress
+                            style={{ color: "darkviolet", marginLeft: "45%" }}
+                            size={20}
+                          />
+                        </div>
+                      ) : (
+                        <div>
+                          <p>{video?.title} </p>
+                          <p className="duration">{video?.duration} </p>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            {loading ? (
-              <div className="loader">
-                <CircularProgress style={{ color: "darkviolet" }} />
+            {active ? (
+              <div className="reset">
+                <button onClick={() => reset()}>Resetar</button>
               </div>
             ) : undefined}
-            <div className="VideoCardsContainer ">
-              {videos.map((video, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="videoCard"
-                    onClick={() => playMusic(video?.id)}
-                  >
-                    <img
-                      src={video?.bestThumbnail?.url}
-                      alt="video thumbnail"
-                    />
-                    {loading2 && videoId === video?.id ? (
-                      <div>
-                        <CircularProgress
-                          style={{ color: "darkviolet", marginLeft: "45%" }}
-                          size={20}
-                        />
-                      </div>
-                    ) : (
-                      <div>
-                        <p>{video?.title} </p>
-                        <p className="duration">{video?.duration} </p>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
           </div>
         </div>
       </Container>

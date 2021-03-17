@@ -6,15 +6,33 @@ import { FiLogIn, FiMail, FiLock } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Container, Content, Background } from "./styles";
 import { useAuth } from "../../contexts/AuthContext";
+import { notification } from "../../components/notifications";
 
 const Login = () => {
   const user = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (!email) {
+      notification("Erro", "E-mail não pode ficar em branco!", "danger");
+      setLoading(false);
+
+      return;
+    }
+
+    if (!password) {
+      notification("Erro", "Senha não pode ficar em branco!", "danger");
+      setLoading(false);
+
+      return;
+    }
     user.signIn(email, password);
+    setLoading(false);
   };
 
   return (
@@ -40,7 +58,8 @@ const Login = () => {
             type="password"
             placeholder="Senha"
           />
-          <Button>Entrar</Button>
+          <Button loading={loading}>Entrar</Button>
+
           <Link to="recover-password">Esqueci minha senha</Link>
         </form>
         <Link to="register">

@@ -64,6 +64,16 @@ export const Content = styled.div`
       margin-right: 10px;
     }
   }
+
+  @media (max-width: 550px) {
+    img {
+      width: 50%;
+    }
+    form {
+      width: 80%;
+      margin: 50px 0;
+    }
+  }
 `;
 
 export const Background = styled.div`

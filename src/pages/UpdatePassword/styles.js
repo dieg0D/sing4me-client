@@ -52,8 +52,21 @@ export const Content = styled.div`
         background-color: #313131;
       }
 
-      button{
+      button {
         margin-top: 2rem;
+      }
+    }
+  }
+
+  @media (max-width: 550px) {
+    padding: 1rem;
+    .wrapper {
+      width: 100%;
+      img {
+        width: 30%;
+      }
+      form {
+        width: 100%;
       }
     }
   }

@@ -49,7 +49,7 @@ export const Content = styled.div`
   > a {
     color: darkviolet;
     display: block;
-   
+
     text-decoration: none;
     transition: color 0.2s;
 
@@ -62,6 +62,15 @@ export const Content = styled.div`
 
     svg {
       margin-right: 10px;
+    }
+  }
+  @media (max-width: 550px) {
+    img {
+      width: 50%;
+    }
+    form {
+      width: 80%;
+      margin: 50px 0;
     }
   }
 `;
