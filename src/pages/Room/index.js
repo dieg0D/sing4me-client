@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { socket } from "../../services/socket";
 import Peer from "simple-peer";
 import { useParams, useHistory } from "react-router-dom";
 import Header from "../../components/Header";
@@ -11,6 +10,8 @@ import { getMusic, searchMusic } from "../../services/Music";
 import Input from "../../components/Input";
 import { FiSearch, FiYoutube } from "react-icons/fi";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { url } from "../../services/api";
+import socketIO from "socket.io-client";
 
 const videoConstraints = {
   height: window.innerHeight,
@@ -30,6 +31,7 @@ const Room = (props) => {
   const userVideo = useRef();
   const karaokeVideo = useRef();
 
+  const socket = socketIO(url);
   const peersRef = useRef([]);
   const { roomID } = useParams();
 
@@ -144,6 +146,7 @@ const Room = (props) => {
         console.log(error);
       }
     };
+    // eslint-disable-next-line
   }, [roomID, history]);
 
   function createPeer(userToSignal, callerID, stream) {
@@ -269,7 +272,6 @@ const Room = (props) => {
               crossOrigin="anonymous"
               controls
               autoPlay
-              styel
               controlsList="nodownload"
               style={{ display: "none" }}
             ></video>
