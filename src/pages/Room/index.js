@@ -13,12 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { url } from "../../services/api";
 import socketIO from "socket.io-client";
 
-const videoConstraints = {
-  height: window.innerHeight,
-  width: window.innerWidth,
-};
-
-const Room = (props) => {
+const Room = () => {
   const [peers, setPeers] = useState([]);
   const [title, setTitle] = useState("");
   const [videos, setVideos] = useState([]);
@@ -67,7 +62,14 @@ const Room = (props) => {
       history.push(`/`);
     } else {
       mediaDevices
-        .getUserMedia({ video: videoConstraints, audio: true })
+        .getUserMedia({
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 1024 },
+            facingMode: "environment",
+          },
+          audio: true,
+        })
         .then((stream) => {
           userVideo.current.srcObject = stream;
 
