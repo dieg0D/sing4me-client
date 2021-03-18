@@ -93,7 +93,7 @@ export const Content = styled.div`
           font-size: 2rem;
         }
         .face {
-          font-size: 10rem;
+          font-size: 8rem;
           margin-top: 2rem;
           margin-bottom: 0.5rem;
         }

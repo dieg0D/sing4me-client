@@ -66,7 +66,7 @@ const Room = () => {
           video: {
             width: { ideal: 1280 },
             height: { ideal: 1024 },
-            facingMode: "environment",
+            facingMode: "user",
           },
           audio: true,
         })
