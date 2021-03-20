@@ -1,17 +1,23 @@
 import React, { useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
-import { useParams, useHistory } from "react-router-dom";
-import Header from "../../components/Header";
 import MyVideo from "../../components/MyVideo";
-import { Container } from "./styles";
+import Header from "../../components/Header";
 import PeerVideo from "../../components/PeerVideo";
+import Input from "../../components/Input";
+import Drawer from "@material-ui/core/Drawer";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import socketIO from "socket.io-client";
+import Particles from "react-tsparticles";
+
+import { useParams, useHistory } from "react-router-dom";
+import { Container, Menu } from "./styles";
 import { notification } from "../../components/notifications";
 import { getMusic, searchMusic } from "../../services/Music";
-import Input from "../../components/Input";
-import { FiSearch, FiYoutube } from "react-icons/fi";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { FiSearch, FiYoutube, FiMenu, FiX, FiRefreshCcw } from "react-icons/fi";
 import { url } from "../../services/api";
-import socketIO from "socket.io-client";
+import { Fab, Action } from "react-tiny-fab";
+
+import "react-tiny-fab/dist/styles.css";
 
 const Room = () => {
   const [peers, setPeers] = useState([]);
@@ -21,6 +27,7 @@ const Room = () => {
   const [loading2, setLoading2] = useState(false);
   const [active, setActive] = useState(false);
   const [videoId, setVideoId] = useState("");
+  const [visible, setVisible] = useState(false);
 
   const history = useHistory();
   const userVideo = useRef();
@@ -71,7 +78,9 @@ const Room = () => {
           audio: true,
         })
         .then((stream) => {
-          userVideo.current.srcObject = stream;
+          if (userVideo.current) {
+            userVideo.current.srcObject = stream;
+          }
 
           socket.emit("join room", roomID);
 
@@ -88,7 +97,10 @@ const Room = () => {
                 peerID: userID,
                 peer,
               });
-              peers.push(peer);
+              peers.push({
+                peerID: userID,
+                peer,
+              });
             });
             setPeers(peers);
           });
@@ -100,7 +112,13 @@ const Room = () => {
               peer,
             });
 
-            setPeers(peersRef.current.map((item) => item.peer));
+            setPeers((p) => [
+              ...p,
+              {
+                peerID: payload.callerID,
+                peer,
+              },
+            ]);
           });
 
           socket.on("receiving returned signal", (payload) => {
@@ -124,14 +142,14 @@ const Room = () => {
               (item) => item.peerID !== removedUserID
             );
 
-            setPeers(peersRef.current.map((item) => item.peer));
+            setPeers(peersRef.current.map((item) => item));
           });
         })
         .catch((e) => {
           console.log(e);
           notification(
             "Erro",
-            "Para poder utilizar o sing4me você precisa autorizar o uso da sua camera, microfone e a transmissão da sua tela !",
+            "Para poder utilizar o sing4me você precisa autorizar o uso da sua camera, microfone !",
             "danger"
           );
           history.push(`/`);
@@ -238,6 +256,7 @@ const Room = () => {
         replaceStream();
         setActive(true);
         setLoading2(false);
+        setVisible(false);
       })
       .catch((err) => {
         console.error(err);
@@ -257,87 +276,193 @@ const Room = () => {
   return (
     <>
       <Header />
+      <Particles
+        height="89vh"
+        id="tsparticles"
+        options={{
+          background: {
+            color: {
+              value: "#313131",
+            },
+          },
+          fpsLimit: 60,
+          interactivity: {
+            detectsOn: "canvas",
+            events: {
+              onClick: {
+                enable: true,
+                mode: "push",
+              },
+              onHover: {
+                enable: true,
+                mode: "repulse",
+              },
+              resize: true,
+            },
+            modes: {
+              bubble: {
+                distance: 400,
+                duration: 2,
+                opacity: 0.8,
+                size: 40,
+              },
+              push: {
+                quantity: 4,
+              },
+              repulse: {
+                distance: 200,
+                duration: 0.4,
+              },
+            },
+          },
+          particles: {
+            color: {
+              value: "#ffffff",
+            },
+            links: {
+              color: "#ffffff",
+              distance: 150,
+              enable: true,
+              opacity: 0.5,
+              width: 1,
+            },
+            collisions: {
+              enable: true,
+            },
+            move: {
+              direction: "none",
+              enable: true,
+              outMode: "bounce",
+              random: false,
+              speed: 6,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                value_area: 800,
+              },
+              value: 80,
+            },
+            opacity: {
+              value: 0.5,
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              random: true,
+              value: 5,
+            },
+          },
+          detectRetina: true,
+        }}
+      />
       <Container videos={peers.length}>
-        <div className={active ? "wrapper2" : "wrapper"}>
-          <div className="content">
-            <MyVideo stream={userVideo} />
-
-            {peers.map((peer, index) => {
-              return <PeerVideo key={index} peer={peer} />;
-            })}
+        <div className="wrapper">
+          <div className="video-box" style={{ display: active ? "" : "none" }}>
+            <video
+              ref={karaokeVideo}
+              id="youtube"
+              className="youtube"
+              crossOrigin="anonymous"
+              controls
+              autoPlay
+              controlsList="nodownload"
+              style={{ display: "none" }}
+            ></video>
           </div>
-
-          <div className="sidebar">
-            <div className="menu">
-              <video
-                ref={karaokeVideo}
-                id="youtube"
-                className="youtube"
-                crossOrigin="anonymous"
-                controls
-                autoPlay
-                controlsList="nodownload"
-                style={{ display: "none" }}
-              ></video>
-
-              <div>
-                <form onSubmit={searchVideo}>
-                  <Input
-                    name="video"
-                    icon={FiYoutube}
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    type="text"
-                    placeholder="Buscar video"
-                    autoComplete="off"
-                  />
-                  <button disabled={title.length <= 0 ? "disabled" : ""}>
-                    <FiSearch size={20} />
-                  </button>
-                </form>
-              </div>
-              {loading ? (
-                <div className="loader">
-                  <CircularProgress style={{ color: "darkviolet" }} />
-                </div>
-              ) : undefined}
-              <div className="VideoCardsContainer ">
-                {videos.map((video, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="videoCard"
-                      onClick={() => playMusic(video?.id)}
-                    >
-                      <img
-                        src={video?.bestThumbnail?.url}
-                        alt="video thumbnail"
-                      />
-                      {loading2 && videoId === video?.id ? (
-                        <div>
-                          <CircularProgress
-                            style={{ color: "darkviolet", marginLeft: "45%" }}
-                            size={20}
-                          />
-                        </div>
-                      ) : (
-                        <div>
-                          <p>{video?.title} </p>
-                          <p className="duration">{video?.duration} </p>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            {active ? (
-              <div className="reset">
-                <button onClick={() => reset()}>Resetar</button>
-              </div>
-            ) : undefined}
+          <div className={active ? "content2" : "content"}>
+            {peers.map((peer) => {
+              return <PeerVideo key={peer.peerID} peer={peer.peer} />;
+            })}
+            <MyVideo stream={userVideo} />
           </div>
         </div>
+        <Drawer anchor="right" open={visible} onClose={() => setVisible(false)}>
+          <Menu>
+            <div>
+              <form onSubmit={searchVideo}>
+                <Input
+                  name="video"
+                  icon={FiYoutube}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  type="text"
+                  placeholder="Buscar musica"
+                  autoComplete="off"
+                />
+                <button disabled={title.length <= 0 ? "disabled" : ""}>
+                  <FiSearch size={20} />
+                </button>
+              </form>
+            </div>
+            {loading ? (
+              <div className="loader">
+                <CircularProgress style={{ color: "darkviolet" }} />
+              </div>
+            ) : undefined}
+            <div className="VideoCardsContainer ">
+              {videos.map((video, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="videoCard"
+                    onClick={() => playMusic(video?.id)}
+                  >
+                    <img
+                      src={video?.bestThumbnail?.url}
+                      alt="video thumbnail"
+                    />
+                    {loading2 && videoId === video?.id ? (
+                      <div>
+                        <CircularProgress
+                          style={{ color: "darkviolet", marginLeft: "45%" }}
+                          size={20}
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <p>{video?.title} </p>
+                        <p className="duration">{video?.duration} </p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Menu>
+        </Drawer>
+        <Fab
+          mainButtonStyles={{ backgroundColor: "darkviolet" }}
+          icon={<FiMenu size={20} />}
+          event={"hover"}
+          alwaysShowTitle={true}
+        >
+          <Action
+            style={{ backgroundColor: "#212121" }}
+            text="Sair da sala"
+            onClick={() => history.push(`/`)}
+          >
+            <FiX size={20} color="darkviolet" />
+          </Action>
+          {active ? (
+            <Action
+              style={{ backgroundColor: "#212121" }}
+              text="Resetar musica"
+              onClick={() => reset()}
+            >
+              <FiRefreshCcw size={20} color="darkviolet" />
+            </Action>
+          ) : undefined}
+          <Action
+            style={{ backgroundColor: "#212121" }}
+            text="Buscar musica"
+            onClick={() => setVisible(true)}
+          >
+            <FiSearch size={20} color="darkviolet" />
+          </Action>
+        </Fab>
       </Container>
     </>
   );

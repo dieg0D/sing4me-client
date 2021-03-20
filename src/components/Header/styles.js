@@ -3,7 +3,7 @@ import { shade } from "polished";
 export const Container = styled.div`
   background: #212121;
   width: 100%;
-  height: 12vh;
+  height: 10vh;
   padding: 1rem 3.5rem;
   display: flex;
   justify-content: space-between;
@@ -16,7 +16,7 @@ export const Container = styled.div`
     align-items: center;
 
     img {
-      width: 7rem;
+      width: 6rem;
       height: auto;
 
       &:hover {
@@ -61,7 +61,7 @@ export const Container = styled.div`
     }
 
     img {
-      width: 9%;
+      width: 8%;
       padding: 0.1rem;
       border: 2px solid darkviolet;
       border-radius: 50%;

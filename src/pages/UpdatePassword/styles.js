@@ -8,7 +8,7 @@ export const Container = styled.div`
 export const Content = styled.div`
   width: 100%;
   background: #313131;
-  height: 88vh;
+  height: 90vh;
   padding: 2rem;
   display: flex;
   justify-content: center;

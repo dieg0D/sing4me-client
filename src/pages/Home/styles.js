@@ -11,7 +11,7 @@ export const Content = styled.div`
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 88vh;
+  height: 90vh;
 
   .rooms {
     background: #212121;
@@ -79,23 +79,6 @@ export const Content = styled.div`
           svg {
             margin-right: 10px;
           }
-        }
-      }
-
-      .no-rooms {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        p {
-          color: #414141;
-          font-size: 2rem;
-        }
-        .face {
-          font-size: 8rem;
-          margin-top: 2rem;
-          margin-bottom: 0.5rem;
         }
       }
     }
@@ -196,15 +179,6 @@ export const Content = styled.div`
               width: 15px;
               height: 15px;
             }
-          }
-        }
-        .no-rooms {
-          .face {
-            margin-top: 1rem;
-            font-size: 3rem;
-          }
-          p {
-            font-size: 1.3rem;
           }
         }
       }

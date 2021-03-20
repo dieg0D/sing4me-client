@@ -58,35 +58,26 @@ const Home = () => {
             <Search onChange={(e) => setSearch(e.target.value)} />
           </div>
           <div className="container">
-            {data.filter((e) =>
-              e.name.toLowerCase().includes(search.toLowerCase())
-            ).length > 0 ? (
-              data
-                .filter((e) =>
-                  e.name.toLowerCase().includes(search.toLowerCase())
-                )
-                .map((room, index) => (
-                  <div
-                    key={index}
-                    className="room"
-                    onClick={() => {
-                      setRoom(room);
-                      setOpen(true);
-                    }}
-                  >
-                    <h3>{room?.name}</h3>
-                    <p style={{ color: room?.length < 4 ? "white" : "red" }}>
-                      <FiUsers size={20} />
-                      {room?.length}/4
-                    </p>
-                  </div>
-                ))
-            ) : (
-              <div className="no-rooms">
-                <p className="face">¯\_(ツ)_/¯</p>
-                <p>Nenhuma sala disponível</p>
-              </div>
-            )}
+            {data
+              .filter((e) =>
+                e.name.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((room, index) => (
+                <div
+                  key={index}
+                  className="room"
+                  onClick={() => {
+                    setRoom(room);
+                    setOpen(true);
+                  }}
+                >
+                  <h3>{room?.name}</h3>
+                  <p style={{ color: room?.length < 4 ? "white" : "red" }}>
+                    <FiUsers size={20} />
+                    {room?.length}/4
+                  </p>
+                </div>
+              ))}
           </div>
         </div>
         <div className="side-menu">
