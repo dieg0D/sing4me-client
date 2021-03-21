@@ -32,8 +32,8 @@ const Room = () => {
   const history = useHistory();
   const userVideo = useRef();
   const karaokeVideo = useRef();
+  const socket = useRef();
 
-  const socket = socketIO(url);
   const peersRef = useRef([]);
   const { roomID } = useParams();
 
@@ -57,6 +57,7 @@ const Room = () => {
   };
 
   useEffect(() => {
+    socket.current = socketIO(url);
     const route = sessionStorage.getItem("@sing4me:room");
     const mediaDevices = navigator.mediaDevices;
 
@@ -78,21 +79,19 @@ const Room = () => {
           audio: true,
         })
         .then((stream) => {
-          if (userVideo.current) {
-            userVideo.current.srcObject = stream;
-          }
+          userVideo.current.srcObject = stream;
 
-          socket.emit("join room", roomID);
+          socket.current.emit("join room", roomID);
 
-          socket.on("room full", () => {
+          socket.current.on("room full", () => {
             notification("Erro", "Sala cheia =(", "danger");
             history.push(`/`);
           });
 
-          socket.on("all users", (users) => {
+          socket.current.on("all users", (users) => {
             const peers = [];
             users.forEach((userID) => {
-              const peer = createPeer(userID, socket.id, stream);
+              const peer = createPeer(userID, socket.current.id, stream);
               peersRef.current.push({
                 peerID: userID,
                 peer,
@@ -105,15 +104,15 @@ const Room = () => {
             setPeers(peers);
           });
 
-          socket.on("user joined", (payload) => {
+          socket.current.on("user joined", (payload) => {
             const peer = addPeer(payload.signal, payload.callerID, stream);
             peersRef.current.push({
               peerID: payload.callerID,
               peer,
             });
 
-            setPeers((p) => [
-              ...p,
+            setPeers([
+              ...peers,
               {
                 peerID: payload.callerID,
                 peer,
@@ -121,7 +120,7 @@ const Room = () => {
             ]);
           });
 
-          socket.on("receiving returned signal", (payload) => {
+          socket.current.on("receiving returned signal", (payload) => {
             const item = peersRef.current.find((p) => p.peerID === payload.id);
             try {
               item.peer.signal(payload.signal);
@@ -130,7 +129,7 @@ const Room = () => {
             }
           });
 
-          socket.on("remove user", (removedUserID) => {
+          socket.current.on("remove user", (removedUserID) => {
             const peerObj = peersRef.current.find(
               (item) => item.peerID === removedUserID
             );
@@ -162,12 +161,14 @@ const Room = () => {
         userVideo.current.srcObject.getTracks().forEach(function (track) {
           track.stop();
         });
+        peersRef.current.forEach((item) => item.peer.destroy());
+        socket.current.close();
       } catch (error) {
         console.log(error);
       }
     };
     // eslint-disable-next-line
-  }, [roomID, history]);
+  }, []);
 
   function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({
@@ -177,7 +178,7 @@ const Room = () => {
     });
 
     peer.on("signal", (signal) => {
-      socket.emit("sending signal", {
+      socket.current.emit("sending signal", {
         userToSignal,
         callerID,
         signal,
@@ -195,7 +196,7 @@ const Room = () => {
     });
 
     peer.on("signal", (signal) => {
-      socket.emit("returning signal", { signal, callerID });
+      socket.current.emit("returning signal", { signal, callerID });
     });
 
     peer.signal(incomingSignal);
