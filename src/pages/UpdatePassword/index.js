@@ -15,16 +15,51 @@ const UpdatePassword = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+
+    if (newPassword !== confirmPassword) {
+      notification(
+        "Erro",
+        "A nova senha e confirmação de senha não conferem!",
+        "danger"
+      );
+      setLoading(false);
+      return;
+    }
+
+    if (!oldPassword) {
+      notification("Erro", "Senha antiga não pode ficar em branco!", "danger");
+      setLoading(false);
+      return;
+    }
+    if (!newPassword) {
+      notification("Erro", "Nova senha não pode ficar em branco!", "danger");
+      setLoading(false);
+      return;
+    }
+
+    if (!confirmPassword) {
+      notification(
+        "Erro",
+        "Confirmação de senha não pode ficar em branco!",
+        "danger"
+      );
+      setLoading(false);
+      return;
+    }
     updatePassword(oldPassword, newPassword)
       .then(() => {
         notification("Sucesso", "Senha atualizada com sucesso!", "success");
+        setLoading(false);
       })
-      .catch((err) =>
-        notification("Erro", err.response.data.message, "danger")
-      );
+      .catch((err) => {
+        notification("Erro", err.response.data.message, "danger");
+        setLoading(false);
+      });
   };
 
   return (
@@ -67,7 +102,7 @@ const UpdatePassword = () => {
               placeholder="Confirmar nova senha"
             />
 
-            <Button>Confirmar</Button>
+            <Button loading={loading}>Confirmar</Button>
           </form>
         </div>
       </Content>

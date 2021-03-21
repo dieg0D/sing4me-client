@@ -37,9 +37,9 @@ export const Container = styled.div`
     }
 
     .content {
-      background: #212121;
+      /* background: #212121;
       border-radius: 5px;
-      padding: 0.5rem;
+      padding: 0.5rem; */
       width: 100%;
       height: 100%;
       display: flex;
@@ -48,19 +48,22 @@ export const Container = styled.div`
       flex-wrap: wrap;
 
       .video {
+        background: #212121;
+        border-radius: 5px;
+        padding: 0.5rem;
         width: 49%;
         height: 48%;
         ${({ videos }) =>
           videos === 0 &&
           css`
-            width: 80%;
-            height: 90%;
+            width: 60%;
+            height: 70%;
           `}
 
         ${({ videos }) =>
           videos === 1 &&
           css`
-            height: 95%;
+            height: 60%;
           `}
         video {
           width: 0;
@@ -153,6 +156,7 @@ export const Container = styled.div`
         .video {
           width: 100%;
           height: 24%;
+          padding: 0.3rem;
 
           ${({ videos }) =>
             videos === 1 &&

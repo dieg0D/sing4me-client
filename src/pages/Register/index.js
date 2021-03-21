@@ -96,7 +96,7 @@ const Register = () => {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             icon={FiLock}
-            type="confirmPassword"
+            type="password"
             placeholder="Confirmar senha"
           />
           <Button loading={loading}>Cadastrar</Button>

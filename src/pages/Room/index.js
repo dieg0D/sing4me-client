@@ -390,7 +390,7 @@ const Room = () => {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   type="text"
-                  placeholder="Buscar musica"
+                  placeholder="Buscar música"
                   autoComplete="off"
                 />
                 <button disabled={title.length <= 0 ? "disabled" : ""}>
@@ -450,7 +450,7 @@ const Room = () => {
           {active ? (
             <Action
               style={{ backgroundColor: "#212121" }}
-              text="Resetar musica"
+              text="Resetar música"
               onClick={() => reset()}
             >
               <FiRefreshCcw size={20} color="darkviolet" />
@@ -458,7 +458,7 @@ const Room = () => {
           ) : undefined}
           <Action
             style={{ backgroundColor: "#212121" }}
-            text="Buscar musica"
+            text="Buscar música"
             onClick={() => setVisible(true)}
           >
             <FiSearch size={20} color="darkviolet" />
