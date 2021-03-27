@@ -72,8 +72,6 @@ const Room = () => {
       mediaDevices
         .getUserMedia({
           video: {
-            width: { ideal: 1280 },
-            height: { ideal: 1024 },
             facingMode: "user",
           },
           audio: true,
@@ -89,19 +87,19 @@ const Room = () => {
           });
 
           socket.current.on("all users", (users) => {
-            const peers = [];
+            const peersN = [];
             users.forEach((userID) => {
               const peer = createPeer(userID, socket.current.id, stream);
               peersRef.current.push({
                 peerID: userID,
                 peer,
               });
-              peers.push({
+              peersN.push({
                 peerID: userID,
                 peer,
               });
             });
-            setPeers(peers);
+            setPeers(peersN);
           });
 
           socket.current.on("user joined", (payload) => {
@@ -111,22 +109,17 @@ const Room = () => {
               peer,
             });
 
-            setPeers([
-              ...peers,
-              {
-                peerID: payload.callerID,
-                peer,
-              },
-            ]);
+            const peerObj = {
+              peerID: payload.callerID,
+              peer,
+            };
+
+            setPeers((p) => [...p, peerObj]);
           });
 
           socket.current.on("receiving returned signal", (payload) => {
             const item = peersRef.current.find((p) => p.peerID === payload.id);
-            try {
-              item.peer.signal(payload.signal);
-            } catch (err) {
-              console.log(err);
-            }
+            item.peer.signal(payload.signal);
           });
 
           socket.current.on("remove user", (removedUserID) => {
@@ -137,11 +130,12 @@ const Room = () => {
             if (peerObj) {
               peerObj.peer.destroy();
             }
-            peersRef.current = peersRef.current.filter(
+            const peersN = peersRef.current.filter(
               (item) => item.peerID !== removedUserID
             );
+            peersRef.current = peersN;
 
-            setPeers(peersRef.current.map((item) => item));
+            setPeers(peersN);
           });
         })
         .catch((e) => {
@@ -154,14 +148,12 @@ const Room = () => {
           history.push(`/`);
         });
     }
+    let usersToClean = userVideo.current;
     return () => {
       sessionStorage.setItem("@sing4me:room", "");
       try {
-        // eslint-disable-next-line
-        userVideo.current.srcObject.getTracks().forEach(function (track) {
-          track.stop();
-        });
         peersRef.current.forEach((item) => item.peer.destroy());
+        usersToClean.srcObject.getTracks().forEach((track) => track.stop());
         socket.current.close();
       } catch (error) {
         console.log(error);
@@ -374,7 +366,9 @@ const Room = () => {
             ></video>
           </div>
           <div className={active ? "content2" : "content"}>
-            {peers.map((peer) => {
+            {[
+              ...new Map(peers.map((item) => [item.peerID, item])).values(),
+            ].map((peer) => {
               return <PeerVideo key={peer.peerID} peer={peer.peer} />;
             })}
             <MyVideo stream={userVideo} />
