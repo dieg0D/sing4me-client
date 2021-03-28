@@ -28,6 +28,7 @@ const Room = () => {
   const [active, setActive] = useState(false);
   const [videoId, setVideoId] = useState("");
   const [visible, setVisible] = useState(false);
+  const [currentSinger, setCurrentSinger] = useState("");
 
   const history = useHistory();
   const userVideo = useRef();
@@ -58,6 +59,7 @@ const Room = () => {
 
   useEffect(() => {
     socket.current = socketIO(url);
+
     const route = sessionStorage.getItem("@sing4me:room");
     const mediaDevices = navigator.mediaDevices;
 
@@ -88,6 +90,7 @@ const Room = () => {
 
           socket.current.on("all users", (users) => {
             const peersN = [];
+
             users.forEach((userID) => {
               const peer = createPeer(userID, socket.current.id, stream);
               peersRef.current.push({
@@ -120,6 +123,11 @@ const Room = () => {
           socket.current.on("receiving returned signal", (payload) => {
             const item = peersRef.current.find((p) => p.peerID === payload.id);
             item.peer.signal(payload.signal);
+          });
+
+          socket.current.on("current singer", (id) => {
+            console.log("olha o id: " + id);
+            setCurrentSinger(id);
           });
 
           socket.current.on("remove user", (removedUserID) => {
@@ -250,6 +258,7 @@ const Room = () => {
         setActive(true);
         setLoading2(false);
         setVisible(false);
+        socket.current.emit("singing", roomID);
       })
       .catch((err) => {
         console.error(err);
@@ -264,6 +273,7 @@ const Room = () => {
     setVideos([]);
     setVideoId("");
     setActive(false);
+    socket.current.emit("remove singer", roomID);
   }
 
   return (
@@ -351,9 +361,35 @@ const Room = () => {
           detectRetina: true,
         }}
       />
-      <Container videos={peers.length}>
+      <Container
+        videos={
+          currentSinger !== ""
+            ? [...new Map(peers.map((item) => [item.peerID, item])).values()]
+                .length - 1
+            : [...new Map(peers.map((item) => [item.peerID, item])).values()]
+                .length
+        }
+      >
         <div className="wrapper">
-          <div className="video-box" style={{ display: active ? "" : "none" }}>
+          <div
+            className="video-box"
+            style={{ display: active || currentSinger !== "" ? "" : "none" }}
+          >
+            {active
+              ? undefined
+              : [
+                  ...new Map(peers.map((item) => [item.peerID, item])).values(),
+                ].map((peer) => {
+                  return (
+                    <PeerVideo
+                      key={peer.peerID}
+                      peer={peer.peer}
+                      currentSinger={
+                        currentSinger === peer.peerID ? false : true
+                      }
+                    />
+                  );
+                })}
             <video
               ref={karaokeVideo}
               id="youtube"
@@ -365,11 +401,19 @@ const Room = () => {
               style={{ display: "none" }}
             ></video>
           </div>
-          <div className={active ? "content2" : "content"}>
+          <div
+            className={active || currentSinger !== "" ? "content2" : "content"}
+          >
             {[
               ...new Map(peers.map((item) => [item.peerID, item])).values(),
             ].map((peer) => {
-              return <PeerVideo key={peer.peerID} peer={peer.peer} />;
+              return (
+                <PeerVideo
+                  key={peer.peerID}
+                  peer={peer.peer}
+                  currentSinger={currentSinger === peer.peerID ? true : false}
+                />
+              );
             })}
             <MyVideo stream={userVideo} />
           </div>
@@ -450,13 +494,15 @@ const Room = () => {
               <FiRefreshCcw size={20} color="darkviolet" />
             </Action>
           ) : undefined}
-          <Action
-            style={{ backgroundColor: "#212121" }}
-            text="Buscar música"
-            onClick={() => setVisible(true)}
-          >
-            <FiSearch size={20} color="darkviolet" />
-          </Action>
+          {currentSinger === "" ? (
+            <Action
+              style={{ backgroundColor: "#212121" }}
+              text="Buscar música"
+              onClick={() => setVisible(true)}
+            >
+              <FiSearch size={20} color="darkviolet" />
+            </Action>
+          ) : undefined}
         </Fab>
       </Container>
     </>

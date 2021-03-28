@@ -31,7 +31,7 @@ const Login = () => {
 
       return;
     }
-    user.signIn(email, password);
+    user.signIn(email, password, setLoading);
     setLoading(false);
   };
 

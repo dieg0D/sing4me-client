@@ -15,16 +15,19 @@ const Auth = ({ children }) => {
     return null;
   });
 
-  const signIn = useCallback((email, password) => {
+  const signIn = useCallback((email, password, callBack = (p) => {}) => {
+    callBack(true);
     login(email, password)
       .then((res) => {
         const user = res.data;
         localStorage.setItem("@sing4me:user", JSON.stringify(user));
         setData(user);
+        callBack(false);
       })
-      .catch((err) =>
-        notification("Erro", err.response.data.message, "danger")
-      );
+      .catch((err) => {
+        notification("Erro", err.response.data.message, "danger");
+        callBack(false);
+      });
   }, []);
 
   const signOut = useCallback(() => {

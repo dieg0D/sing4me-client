@@ -29,6 +29,27 @@ export const Container = styled.div`
       display: flex;
       justify-content: center;
       align-items: center;
+
+      .video {
+        background: #212121;
+        border-radius: 5px;
+        padding: 0.5rem;
+        width: 100%;
+        height: 100%;
+
+        video {
+          width: 0;
+          height: 0;
+          visibility: hidden;
+        }
+
+        canvas {
+          width: 100%;
+          height: 100%;
+          border-radius: 5px;
+        }
+      }
+
       video {
         width: 100%;
         border-radius: 5px;

@@ -6,6 +6,8 @@ export const Container = styled.div`
 `;
 
 export const Content = styled.div`
+  position: absolute;
+  top: 10vh;
   width: 100%;
   background: #313131;
   height: 90vh;

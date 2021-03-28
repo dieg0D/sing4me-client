@@ -7,7 +7,7 @@ import PlayArrowIcon from "@material-ui/icons/PlayArrow";
 import PauseIcon from "@material-ui/icons/Pause";
 import { Container } from "./styles";
 
-const Video = ({ peer }) => {
+const Video = ({ peer, currentSinger = false }) => {
   const video = useRef();
   const audio = useRef();
   const canvas = useRef();
@@ -57,10 +57,11 @@ const Video = ({ peer }) => {
       id="container"
       onMouseEnter={() => setShowControlls(true)}
       onMouseLeave={() => setShowControlls(false)}
+      style={{ display: currentSinger ? "none" : "" }}
     >
       <video ref={video} autoPlay muted />
       <canvas ref={canvas}>
-        <audio ref={audio} autoPlay />
+        <audio ref={audio} autoPlay muted={currentSinger} />
       </canvas>
 
       {showControlls ? (
