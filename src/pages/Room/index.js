@@ -173,7 +173,7 @@ const Room = () => {
   function createPeer(userToSignal, callerID, stream) {
     const peer = new Peer({
       initiator: true,
-      trickle: false,
+      trickle: true,
       stream,
     });
 
@@ -191,7 +191,7 @@ const Room = () => {
   function addPeer(incomingSignal, callerID, stream) {
     const peer = new Peer({
       initiator: false,
-      trickle: false,
+      trickle: true,
       stream,
     });
 
