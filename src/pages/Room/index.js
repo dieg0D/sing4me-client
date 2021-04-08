@@ -405,6 +405,7 @@ const Room = () => {
           mainButtonStyles={{ backgroundColor: "darkviolet" }}
           icon={<FiMenu size={20} />}
           alwaysShowTitle={true}
+          event={"click"}
         >
           <Action
             style={{ backgroundColor: "#212121" }}
