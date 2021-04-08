@@ -187,9 +187,12 @@ export const Content = styled.div`
 
     .side-menu {
       width: 100%;
-      min-height: 100%;
+
       .update {
         display: none;
+      }
+      .wrapper {
+        height: 100%;
       }
     }
   }
