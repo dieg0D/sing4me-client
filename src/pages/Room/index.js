@@ -7,7 +7,6 @@ import Input from "../../components/Input";
 import Drawer from "@material-ui/core/Drawer";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import socketIO from "socket.io-client";
-import Particles from "react-tsparticles";
 
 import { useParams, useHistory } from "react-router-dom";
 import { Container, Menu } from "./styles";
@@ -75,6 +74,8 @@ const Room = () => {
         .getUserMedia({
           video: {
             facingMode: "user",
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
           },
           audio: true,
         })
@@ -211,7 +212,7 @@ const Room = () => {
     searchMusic(`${title} karaoke`)
       .then((res) => {
         console.log(res.data);
-        setVideos(res.data?.items);
+        setVideos(res.data?.items.filter((i) => i?.type === "video"));
         setLoading(false);
       })
       .catch((err) => {
@@ -261,6 +262,11 @@ const Room = () => {
         socket.current.emit("singing", roomID);
       })
       .catch((err) => {
+        notification(
+          "Erro ao executar media!",
+          "Parece que esse video não pode ser executado, por favor tente outra versão",
+          "danger"
+        );
         console.error(err);
         setLoading2(false);
       });
@@ -279,88 +285,6 @@ const Room = () => {
   return (
     <>
       <Header />
-      <Particles
-        height="89vh"
-        id="tsparticles"
-        options={{
-          background: {
-            color: {
-              value: "#313131",
-            },
-          },
-          fpsLimit: 60,
-          interactivity: {
-            detectsOn: "canvas",
-            events: {
-              onClick: {
-                enable: true,
-                mode: "push",
-              },
-              onHover: {
-                enable: true,
-                mode: "repulse",
-              },
-              resize: true,
-            },
-            modes: {
-              bubble: {
-                distance: 400,
-                duration: 2,
-                opacity: 0.8,
-                size: 40,
-              },
-              push: {
-                quantity: 4,
-              },
-              repulse: {
-                distance: 200,
-                duration: 0.4,
-              },
-            },
-          },
-          particles: {
-            color: {
-              value: "#ffffff",
-            },
-            links: {
-              color: "#ffffff",
-              distance: 150,
-              enable: true,
-              opacity: 0.5,
-              width: 1,
-            },
-            collisions: {
-              enable: true,
-            },
-            move: {
-              direction: "none",
-              enable: true,
-              outMode: "bounce",
-              random: false,
-              speed: 6,
-              straight: false,
-            },
-            number: {
-              density: {
-                enable: true,
-                value_area: 800,
-              },
-              value: 80,
-            },
-            opacity: {
-              value: 0.5,
-            },
-            shape: {
-              type: "circle",
-            },
-            size: {
-              random: true,
-              value: 5,
-            },
-          },
-          detectRetina: true,
-        }}
-      />
       <Container
         videos={
           currentSinger !== ""
@@ -449,23 +373,28 @@ const Room = () => {
                     className="videoCard"
                     onClick={() => playMusic(video?.id)}
                   >
-                    <img
-                      src={video?.bestThumbnail?.url}
-                      alt="video thumbnail"
-                    />
                     {loading2 && videoId === video?.id ? (
-                      <div>
+                      <div
+                        className="image"
+                        style={{
+                          backgroundImage: `url("${video?.bestThumbnail?.url}")`,
+                        }}
+                      >
                         <CircularProgress
-                          style={{ color: "darkviolet", marginLeft: "45%" }}
+                          style={{ color: "darkviolet" }}
                           size={20}
                         />
                       </div>
                     ) : (
-                      <div>
-                        <p>{video?.title} </p>
-                        <p className="duration">{video?.duration} </p>
-                      </div>
+                      <img
+                        src={video?.bestThumbnail?.url}
+                        alt="video thumbnail"
+                      />
                     )}
+                    <div className="description">
+                      <p>{video?.title} </p>
+                      <p className="duration">{video?.duration} </p>
+                    </div>
                   </div>
                 );
               })}
@@ -475,7 +404,6 @@ const Room = () => {
         <Fab
           mainButtonStyles={{ backgroundColor: "darkviolet" }}
           icon={<FiMenu size={20} />}
-          event={"hover"}
           alwaysShowTitle={true}
         >
           <Action

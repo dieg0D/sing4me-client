@@ -54,6 +54,7 @@ export const Container = styled.div`
         width: 100%;
         border-radius: 5px;
         height: auto;
+        max-height: 100%;
       }
     }
 
@@ -77,8 +78,8 @@ export const Container = styled.div`
         ${({ videos }) =>
           videos === 0 &&
           css`
-            width: 60%;
-            height: 70%;
+            width: 80%;
+            height: 90%;
           `}
 
         ${({ videos }) =>
@@ -175,6 +176,7 @@ export const Container = styled.div`
           `}
 
         .video {
+          border-radius: 0px;
           width: 100%;
           height: 24%;
           padding: 0.3rem;
@@ -200,6 +202,7 @@ export const Container = styled.div`
       }
 
       .video-box {
+        border-radius: 0px;
         width: 100%;
         height: 37%;
 
@@ -209,6 +212,8 @@ export const Container = styled.div`
       }
 
       .content2 {
+        border-radius: 0px;
+
         width: 100%;
         height: 63%;
         grid-template-columns: 1fr 1fr;
@@ -235,6 +240,10 @@ export const Container = styled.div`
             grid-template-areas: ". ";
           `}
       }
+    }
+    ul {
+      bottom: -1rem !important;
+      right: -1rem !important;
     }
   }
 `;
@@ -315,7 +324,17 @@ export const Menu = styled.div`
         width: 6rem;
         height: auto;
       }
-      div {
+      .image {
+        width: 7.8rem;
+        height: 3.5rem;
+        background-color: #313131;
+        background-size: cover;
+        background-repeat: no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .description {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
