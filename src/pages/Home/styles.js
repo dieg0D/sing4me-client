@@ -160,7 +160,7 @@ export const Content = styled.div`
       padding: 1rem;
       width: 100%;
       margin-bottom: 1rem;
-      min-height: 30%;
+      height: 50%;
 
       .container {
         max-height: 75%;

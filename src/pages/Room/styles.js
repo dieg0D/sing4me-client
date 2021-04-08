@@ -178,19 +178,19 @@ export const Container = styled.div`
         .video {
           border-radius: 0px;
           width: 100%;
-          height: 24%;
-          padding: 0.3rem;
+          height: 25%;
+          padding: 0.5rem;
 
           ${({ videos }) =>
             videos === 1 &&
             css`
-              height: 49%;
+              height: 50%;
             `}
 
           ${({ videos }) =>
             videos === 2 &&
             css`
-              height: 32%;
+              height: 33.33%;
             `}
 
             ${({ videos }) =>
@@ -205,6 +205,7 @@ export const Container = styled.div`
         border-radius: 0px;
         width: 100%;
         height: 37%;
+        padding: 0rem;
 
         video {
           width: 100%;
@@ -213,6 +214,7 @@ export const Container = styled.div`
 
       .content2 {
         border-radius: 0px;
+        padding: 0.3rem;
 
         width: 100%;
         height: 63%;
